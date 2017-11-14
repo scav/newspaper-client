@@ -1,0 +1,20 @@
+version: '3'
+services:
+  newspaper-app:
+    image: coderpews/newspaper-app:0.7
+    container_name: newspaper-app
+    hostname: api
+    environment:
+      - ARTICLE_AMOUNT=5
+    ports:
+      - "5000:5000"
+    expose:
+      - "5000"
+  newspaper-client:
+    image: test2
+    container_name: newspaper-client
+    hostname: client
+    ports:
+      - "80:80"
+    expose:
+      - "80"
