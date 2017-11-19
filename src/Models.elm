@@ -7,7 +7,8 @@ type Content
 
 
 type alias Model =
-    { input : String
+    { location : String
+    , input : String
     , articles : Articles
     , error : Maybe ErrorM
     }
@@ -16,7 +17,8 @@ type alias Model =
 type alias Config =
     { appName : String
     , version : String
-    , endpoint : String
+    , endpointHead : String
+    , endpointTail : String
     }
 
 
@@ -57,7 +59,8 @@ type alias Article =
 
 initialModel : Model
 initialModel =
-    { input = ""
+    { location = ""
+    , input = ""
     , articles = Articles []
     , error = Nothing
     }
@@ -67,5 +70,6 @@ config : Config
 config =
     { appName = "NewsApp"
     , version = "1.0.0"
-    , endpoint = "http://localhost:5000/?url="
+    , endpointHead = "http://"
+    , endpointTail = "/?url="
     }

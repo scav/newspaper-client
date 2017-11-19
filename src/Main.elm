@@ -11,6 +11,7 @@ import Style as Style exposing (..)
 import Http
 import Json.Decode as Decode
 import Json.Decode.Pipeline as Pipeline exposing (..)
+import Debug exposing (log)
 
 
 -- MAIN
@@ -38,6 +39,7 @@ init =
 type Msg
     = KeyMsg Keyboard.KeyCode
     | Input String
+    | Location String
     | Fetch
     | FetchArticle (Result Http.Error Models.Articles)
 
@@ -52,13 +54,15 @@ update msg model =
         Input input ->
             ( { model | input = input }, Cmd.none )
 
+        Location location ->
+            ( { model | location = location }, Cmd.none )
+
         Fetch ->
-            ( model, getArticle model.input )
+            ( model, (getArticle model.location model.input) )
 
         FetchArticle (Ok res) ->
-            ( Model "" res Nothing, Cmd.none )
+            ( Model "" "" res Nothing, Cmd.none )
 
-        -- ( { model | result = res }, Cmd.none )
         FetchArticle (Err err) ->
             httpError model err
 
@@ -79,7 +83,7 @@ httpError model err =
             )
 
         Http.BadUrl badUrl ->
-            ( { model | error = Just (ErrorM (toString err) badUrl) }
+            ( { model | error = Just (ErrorM (toString err) "Did you supply a correct target location?") }
             , Cmd.none
             )
 
@@ -125,11 +129,13 @@ view model =
         , div [ class [ Style.Content ] ]
             [ h1 [ id [ Style.Title ] ] [ text config.appName ]
             , Html.form [ onSubmit Fetch ]
-                [ input [ id [ Style.InputBar ], onInput Input, onSubmit Fetch ] []
-                ]
+                [ input [ id [ Style.InputBar ], onInput Location, onSubmit Fetch, placeholder "API location (e.g. localhost:5000)" ] [] ]
+            , Html.form [ onSubmit Fetch ]
+                [ input [ id [ Style.InputBar ], onInput Input, onSubmit Fetch, placeholder "Target location (e.g. nrk.no)" ] [] ]
             , div [] (List.map resultView model.articles.content)
             , errorView model
             ]
+        , div [] [ text (toString model.location) ]
         ]
 
 
@@ -162,13 +168,16 @@ errorView model =
 -- HTTP
 
 
-getArticle : String -> Cmd Msg
-getArticle input =
+getArticle : String -> String -> Cmd Msg
+getArticle location input =
     let
         url =
-            config.endpoint ++ input
+            config.endpointHead ++ location ++ config.endpointTail ++ input
     in
-        Http.send FetchArticle (Http.get url decodeResult)
+        log location
+            Http.send
+            FetchArticle
+            (Http.get url decodeResult)
 
 
 decodeResult : Decode.Decoder Models.Articles
