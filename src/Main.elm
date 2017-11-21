@@ -191,19 +191,8 @@ articleDecoder : Decode.Decoder Models.Article
 articleDecoder =
     Pipeline.decode Models.Article
         |> Pipeline.optional "authors" (Decode.list Decode.string) [ "" ]
-        |> Pipeline.required "canonical_link" Decode.string
-        |> Pipeline.required "download_state" Decode.int
-        |> Pipeline.required "keywords" (Decode.list Decode.string)
-        |> Pipeline.required "link_hash" Decode.string
-        |> Pipeline.required "meta_description" Decode.string
-        |> Pipeline.required "meta_favicon" Decode.string
-        |> Pipeline.required "meta_img" Decode.string
-        |> Pipeline.required "meta_keywords" (Decode.list Decode.string)
-        |> Pipeline.required "meta_lang" Decode.string
-        |> Pipeline.required "source_url" Decode.string
         |> Pipeline.required "summary" Decode.string
         |> Pipeline.required "text" Decode.string
         |> Pipeline.required "title" Decode.string
         |> Pipeline.required "top_image" Decode.string
-        |> Pipeline.required "top_img" Decode.string
         |> Pipeline.required "url" Decode.string

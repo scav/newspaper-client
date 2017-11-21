@@ -34,21 +34,10 @@ type alias Articles =
 
 type alias Article =
     { authors : List String
-    , canonical_link : String
-    , download_state : Int
-    , keywords : List String
-    , link_hash : String
-    , meta_description : String
-    , meta_favicon : String
-    , meta_img : String
-    , meta_keywords : List String
-    , meta_lang : String
-    , source_url : String
     , summary : String
     , text : String
     , title : String
     , top_image : String
-    , top_img : String
     , url : String
     }
 
